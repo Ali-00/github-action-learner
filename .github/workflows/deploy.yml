@@ -1,0 +1,29 @@
+name: Deploy to GAE learning
+on:
+  push:
+    branches: [learning-muzamal]
+  pull_request:
+    branches: [learning-muzamal]
+
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: Deploy to GAE muzamal-learning
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node and Node Modules
+      uses: actions/setup-node@v2 
+    - name: Building FrontEnd
+      run: |
+            npm dedupe
+            npm install --force
+            npm run build
+    - name: 'Deploy to App Engine'
+      uses: 'google-github-actions/deploy-appengine@v0.2.0'
+      with:
+        deliverables: 'app.yaml'
+        version: 'v1'
+        project_id: ${{  secrets.PROJECT_ID_MUZAMAL  }}
+        credentials: ${{ secrets.SERVICE_ACCOUNT_MUZAMAL }}
